@@ -53,6 +53,7 @@ async def analyze_policy(file: UploadFile = File(...)):
             "status": "success",
             "document": file.filename,
             "risk_score": risk["risk_score"],
+            "trust_score": 100 - risk["risk_score"],
             "risk_level": risk["risk_level"],
             "risks": analysis.get("risks", []),
             "evidence": evidence,
