@@ -1,0 +1,1034 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PrivacyOS</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f7fb;
+    color: #182033;
+}
+
+/* Everything stays inside the screen */
+.app {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    background: white;
+    border-right: 1px solid #e8ebf2;
+    padding: 25px 15px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 35px;
+}
+
+.logo-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background: linear-gradient(135deg, #6877ee, #9b6cff);
+}
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nav button {
+    border: none;
+    background: transparent;
+    padding: 13px;
+    border-radius: 12px;
+    text-align: left;
+    cursor: pointer;
+    color: #7b8497;
+    font-weight: 600;
+    transition: .3s;
+}
+
+.nav button:hover,
+.nav button.active {
+    background: #eef0ff;
+    color: #6877ee;
+}
+
+.sidebar-bottom {
+    position: absolute;
+    bottom: 25px;
+    width: 205px;
+    padding: 15px;
+    border-radius: 14px;
+    background: #f5f7fb;
+}
+
+.sidebar-bottom small {
+    color: #8992a5;
+}
+
+.sidebar-bottom strong {
+    display: block;
+    margin-top: 5px;
+}
+
+/* Main */
+.main {
+    flex: 1;
+    height: 100vh;
+    min-width: 0;
+}
+
+/* Header */
+.topbar {
+    height: 75px;
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255,255,255,.8);
+    border-bottom: 1px solid #e8ebf2;
+}
+
+.topbar h2 {
+    font-size: 20px;
+}
+
+.topbar p {
+    color: #8a92a3;
+    font-size: 11px;
+    margin-top: 4px;
+}
+
+/* Theme button */
+.theme {
+    width: 48px;
+    height: 27px;
+    border: none;
+    border-radius: 20px;
+    background: #e9ecf5;
+    cursor: pointer;
+}
+
+.theme span {
+    display: block;
+    width: 21px;
+    height: 21px;
+    margin-left: 3px;
+    border-radius: 50%;
+    background: white;
+    transition: .4s;
+}
+
+/* Main content */
+.content {
+    height: calc(100vh - 75px);
+    padding: 25px 30px;
+    overflow: hidden;
+}
+
+/* Pages */
+.page {
+    display: none;
+    width: 100%;
+    height: 100%;
+    animation: pageIn .4s ease;
+}
+
+.page.active {
+    display: block;
+}
+
+@keyframes pageIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Welcome */
+.welcome {
+    margin-bottom: 20px;
+}
+
+.welcome h1 {
+    font-size: 27px;
+}
+
+.welcome p {
+    color: #8992a5;
+    margin-top: 5px;
+    font-size: 13px;
+}
+
+/* Stats */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.stat {
+    background: white;
+    border: 1px solid #e8ebf2;
+    border-radius: 17px;
+    padding: 18px;
+    box-shadow: 0 10px 35px rgba(50,60,90,.06);
+    transition: .3s;
+}
+
+.stat:hover {
+    transform: translateY(-4px);
+}
+
+.stat-icon {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f1ff;
+    border-radius: 10px;
+}
+
+.stat small {
+    display: block;
+    margin-top: 12px;
+    color: #8a92a3;
+}
+
+.stat strong {
+    font-size: 25px;
+}
+
+/* Dashboard */
+.dashboard {
+    height: calc(100% - 130px);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 15px;
+}
+
+.card {
+    background: white;
+    border: 1px solid #e8ebf2;
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 10px 35px rgba(50,60,90,.06);
+}
+
+.card h3 {
+    font-size: 14px;
+}
+
+.card p {
+    color: #8a92a3;
+    font-size: 10px;
+    margin-top: 5px;
+}
+
+/* Privacy score */
+.score {
+    grid-row: span 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.circle {
+    width: 180px;
+    height: 180px;
+    margin: 20px;
+    border-radius: 50%;
+    background: conic-gradient(#6877ee 92%, #e8ebf2 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: circleIn 1s ease;
+}
+
+@keyframes circleIn {
+    from {
+        transform: scale(.6) rotate(-90deg);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1) rotate(0);
+        opacity: 1;
+    }
+}
+
+.circle-inner {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.circle-inner strong {
+    font-size: 40px;
+}
+
+.circle-inner span {
+    color: #8992a5;
+    font-size: 10px;
+}
+
+/* Chart */
+.chart {
+    height: 130px;
+    margin-top: 20px;
+    display: flex;
+    align-items: end;
+    gap: 9px;
+}
+
+.bar {
+    flex: 1;
+    border-radius: 7px 7px 0 0;
+    background: linear-gradient(#9ba6ff,#6877ee);
+    animation: grow .8s ease;
+}
+
+@keyframes grow {
+    from {
+        height: 0 !important;
+    }
+}
+
+/* Progress */
+.progress-box {
+    margin-top: 18px;
+}
+
+.progress-title {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    margin-bottom: 6px;
+}
+
+.progress {
+    height: 6px;
+    border-radius: 10px;
+    background: #edf0f5;
+    overflow: hidden;
+}
+
+.progress span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg,#6877ee,#9b6cff);
+}
+
+/* Data flow */
+.flow-page {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.flow-page h1 {
+    font-size: 27px;
+}
+
+.flow-page > p {
+    color: #8992a5;
+    margin-top: 5px;
+    margin-bottom: 30px;
+}
+
+.flow-box {
+    background: white;
+    border: 1px solid #e8ebf2;
+    border-radius: 20px;
+    padding: 45px 20px;
+    box-shadow: 0 10px 35px rgba(50,60,90,.06);
+}
+
+.flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.node {
+    min-width: 130px;
+    padding: 20px 10px;
+    text-align: center;
+    background: #f8f9fd;
+    border: 1px solid #e8ebf2;
+    border-radius: 15px;
+    transition: .3s;
+}
+
+.node:hover {
+    transform: translateY(-7px);
+}
+
+.node-icon {
+    font-size: 25px;
+    margin-bottom: 8px;
+}
+
+.node strong {
+    display: block;
+    font-size: 12px;
+}
+
+.node small {
+    color: #8992a5;
+    font-size: 9px;
+}
+
+.line {
+    width: 45px;
+    height: 2px;
+    background: #dfe3ed;
+    position: relative;
+    overflow: hidden;
+}
+
+.line::after {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 2px;
+    background: #6877ee;
+    left: -20px;
+    animation: flow 1.3s linear infinite;
+}
+
+@keyframes flow {
+    to {
+        left: 100%;
+    }
+}
+
+/* Consent */
+.consent-page {
+    height: 100%;
+}
+
+.consent-page h1,
+.request-page h1 {
+    font-size: 27px;
+}
+
+.subtitle {
+    color: #8992a5;
+    font-size: 13px;
+    margin-top: 5px;
+    margin-bottom: 25px;
+}
+
+.consent-grid,
+.request-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 15px;
+}
+
+.consent-card,
+.request-card {
+    background: white;
+    border: 1px solid #e8ebf2;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 10px 35px rgba(50,60,90,.06);
+    transition: .3s;
+}
+
+.consent-card:hover,
+.request-card:hover {
+    transform: translateY(-6px);
+}
+
+.consent-card h3,
+.request-card h3 {
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.consent-card p,
+.request-card p {
+    color: #8992a5;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+/* Mobile */
+@media(max-width:900px) {
+
+    .sidebar {
+        width: 75px;
+    }
+
+    .logo span,
+    .nav button span:last-child {
+        display: none;
+    }
+
+    .logo {
+        justify-content: center;
+    }
+
+    .nav button {
+        text-align: center;
+    }
+
+    .stats {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .dashboard {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .score {
+        grid-column: span 2;
+        grid-row: span 1;
+    }
+}
+
+@media(max-width:600px) {
+
+    .sidebar {
+        display: none;
+    }
+
+    .content {
+        padding: 18px;
+    }
+
+    .stats {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    .score {
+        grid-column: auto;
+    }
+
+    .flow {
+        flex-wrap: wrap;
+    }
+
+    .line {
+        width: 20px;
+    }
+
+    .consent-grid,
+    .request-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Dark mode */
+body.dark {
+    background: #080d18;
+    color: #f4f6ff;
+}
+
+body.dark .sidebar,
+body.dark .topbar,
+body.dark .card,
+body.dark .stat,
+body.dark .flow-box,
+body.dark .consent-card,
+body.dark .request-card {
+    background: #111927;
+    border-color: #222d40;
+}
+
+body.dark .circle-inner {
+    background: #111927;
+}
+
+body.dark .node {
+    background: #0c1422;
+    border-color: #222d40;
+}
+
+body.dark .sidebar-bottom {
+    background: #0c1422;
+}
+
+body.dark .progress {
+    background: #293346;
+}
+
+body.dark .theme span {
+    transform: translateX(20px);
+}
+
+body.dark .nav button:hover,
+body.dark .nav button.active {
+    background: #202847;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">P</div>
+            <span>PrivacyOS</span>
+        </div>
+
+        <div class="nav">
+
+            <button class="active" onclick="showPage('home',this)">
+                ◉ &nbsp; Dashboard
+            </button>
+
+            <button onclick="showPage('flow',this)">
+                ⟷ &nbsp; Data Flow
+            </button>
+
+            <button onclick="showPage('consent',this)">
+                ✓ &nbsp; Consent
+            </button>
+
+            <button onclick="showPage('requests',this)">
+                ◇ &nbsp; My Requests
+            </button>
+
+        </div>
+
+        <div class="sidebar-bottom">
+            <small>Privacy Score</small>
+            <strong>92 / 100</strong>
+        </div>
+
+    </aside>
+
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <div>
+                <h2 id="title">Privacy Dashboard</h2>
+                <p>Your personal data, clearly understood.</p>
+            </div>
+
+            <button class="theme" onclick="toggleDark()">
+                <span></span>
+            </button>
+
+        </header>
+
+
+        <div class="content">
+
+
+            <!-- DASHBOARD -->
+
+            <section class="page active" id="home">
+
+                <div class="welcome">
+                    <h1>Good afternoon 👋</h1>
+                    <p>Here's your privacy overview.</p>
+                </div>
+
+
+                <div class="stats">
+
+                    <div class="stat">
+                        <div class="stat-icon">🔐</div>
+                        <small>Privacy Score</small>
+                        <strong>92</strong>
+                    </div>
+
+                    <div class="stat">
+                        <div class="stat-icon">✓</div>
+                        <small>Active Consents</small>
+                        <strong>98%</strong>
+                    </div>
+
+                    <div class="stat">
+                        <div class="stat-icon">◈</div>
+                        <small>Data Processors</small>
+                        <strong>12</strong>
+                    </div>
+
+                    <div class="stat">
+                        <div class="stat-icon">◷</div>
+                        <small>Retention Health</small>
+                        <strong>96%</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="dashboard">
+
+                    <div class="card score">
+
+                        <h3>Overall Privacy Score</h3>
+
+                        <p>Your current privacy posture</p>
+
+                        <div class="circle">
+
+                            <div class="circle-inner">
+                                <strong>92</strong>
+                                <span>out of 100</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="card">
+
+                        <h3>Data Activity</h3>
+                        <p>This week</p>
+
+                        <div class="chart">
+
+                            <div class="bar" style="height:40%"></div>
+                            <div class="bar" style="height:65%"></div>
+                            <div class="bar" style="height:50%"></div>
+                            <div class="bar" style="height:80%"></div>
+                            <div class="bar" style="height:60%"></div>
+                            <div class="bar" style="height:90%"></div>
+                            <div class="bar" style="height:70%"></div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="card">
+
+                        <h3>Compliance Health</h3>
+                        <p>Control coverage</p>
+
+                        <div class="progress-box">
+
+                            <div class="progress-title">
+                                <span>Consent</span>
+                                <span>98%</span>
+                            </div>
+
+                            <div class="progress">
+                                <span style="width:98%"></span>
+                            </div>
+
+                        </div>
+
+                        <div class="progress-box">
+
+                            <div class="progress-title">
+                                <span>Data Access</span>
+                                <span>94%</span>
+                            </div>
+
+                            <div class="progress">
+                                <span style="width:94%"></span>
+                            </div>
+
+                        </div>
+
+                        <div class="progress-box">
+
+                            <div class="progress-title">
+                                <span>Retention</span>
+                                <span>96%</span>
+                            </div>
+
+                            <div class="progress">
+                                <span style="width:96%"></span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="card">
+
+                        <h3>Recent Activity</h3>
+                        <p>Latest privacy events</p>
+
+                        <div class="progress-box">✓ Consent updated</div>
+                        <div class="progress-box">🔍 Data access request</div>
+                        <div class="progress-box">🔗 Processor verified</div>
+
+                    </div>
+
+
+                    <div class="card">
+
+                        <h3>Third Parties</h3>
+                        <p>External data access</p>
+
+                        <div class="progress-box">
+
+                            <div class="progress-title">
+                                <span>Verified</span>
+                                <span>88%</span>
+                            </div>
+
+                            <div class="progress">
+                                <span style="width:88%"></span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- DATA FLOW -->
+
+            <section class="page" id="flow">
+
+                <div class="flow-page">
+
+                    <h1>Data Flow</h1>
+
+                    <p>
+                        See how personal data moves between systems.
+                    </p>
+
+                    <div class="flow-box">
+
+                        <div class="flow">
+
+                            <div class="node">
+                                <div class="node-icon">👤</div>
+                                <strong>You</strong>
+                                <small>Data Principal</small>
+                            </div>
+
+                            <div class="line"></div>
+
+                            <div class="node">
+                                <div class="node-icon">🌐</div>
+                                <strong>Application</strong>
+                                <small>Collection</small>
+                            </div>
+
+                            <div class="line"></div>
+
+                            <div class="node">
+                                <div class="node-icon">🏢</div>
+                                <strong>Organization</strong>
+                                <small>Data Fiduciary</small>
+                            </div>
+
+                            <div class="line"></div>
+
+                            <div class="node">
+                                <div class="node-icon">⚙️</div>
+                                <strong>Processor</strong>
+                                <small>Service Provider</small>
+                            </div>
+
+                            <div class="line"></div>
+
+                            <div class="node">
+                                <div class="node-icon">🔗</div>
+                                <strong>Third Party</strong>
+                                <small>External Access</small>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- CONSENT -->
+
+            <section class="page" id="consent">
+
+                <div class="consent-page">
+
+                    <h1>Consent Management</h1>
+
+                    <p class="subtitle">
+                        Control how organizations use your personal data.
+                    </p>
+
+                    <div class="consent-grid">
+
+                        <div class="consent-card">
+                            <h3>✉️ Marketing</h3>
+                            <p>
+                                Promotional emails, offers and campaigns.
+                            </p>
+                        </div>
+
+                        <div class="consent-card">
+                            <h3>📊 Analytics</h3>
+                            <p>
+                                Product usage and analytics information.
+                            </p>
+                        </div>
+
+                        <div class="consent-card">
+                            <h3>🔗 Third Party Sharing</h3>
+                            <p>
+                                Sharing information with external processors.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- REQUESTS -->
+
+            <section class="page" id="requests">
+
+                <div class="request-page">
+
+                    <h1>My Privacy Requests</h1>
+
+                    <p class="subtitle">
+                        Exercise your data rights in a few clicks.
+                    </p>
+
+                    <div class="request-grid">
+
+                        <div class="request-card">
+                            <h3>🔍 Access My Data</h3>
+                            <p>
+                                Request a copy of the personal information
+                                an organization holds about you.
+                            </p>
+                        </div>
+
+                        <div class="request-card">
+                            <h3>🗑️ Delete My Data</h3>
+                            <p>
+                                Request deletion of personal information
+                                where applicable.
+                            </p>
+                        </div>
+
+                        <div class="request-card">
+                            <h3>👁️ View Data Usage</h3>
+                            <p>
+                                Understand why your data is collected,
+                                processed and shared.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+function showPage(page, button) {
+
+    document.querySelectorAll(".page").forEach(p => {
+        p.classList.remove("active");
+    });
+
+    document.getElementById(page).classList.add("active");
+
+    document.querySelectorAll(".nav button").forEach(b => {
+        b.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+    const titles = {
+        home: "Privacy Dashboard",
+        flow: "Data Flow",
+        consent: "Consent Management",
+        requests: "My Requests"
+    };
+
+    document.getElementById("title").textContent = titles[page];
+}
+
+
+function toggleDark() {
+    document.body.classList.toggle("dark");
+}
+
+</script>
+
+</body>
+</html>
+```
